@@ -1,0 +1,52 @@
+name: flutterdemo 
+base: core18 
+version: '0.1' 
+summary: flutterdemo 
+description: flutterdemo
+
+
+grade: devel
+confinement: devmode 
+
+slots:
+ dbus-flutterdemo:
+   interface: dbus
+   bus: session
+   name: com.example.flutterdemo
+
+apps:
+  daemon:
+    daemon: simple
+    restart-condition: always
+    command-chain:
+      - bin/run-daemon
+      - bin/wayland-launch
+    command: bin/flutterdemo
+    extensions: [flutter-master]
+
+  flutterdemo:
+    command-chain:
+      - bin/wayland-launch
+    command: flutterdemo
+    extensions: [flutter-master]
+
+parts:
+  flutterdemo:
+   source: .
+   plugin: flutter
+   flutter-target: lib/main.dart
+  
+  mir-kiosk-snap-launch:
+    plugin: dump
+    source: https://github.com/MirServer/mir-kiosk-snap-launch.git
+    override-build:  $SNAPCRAFT_PART_BUILD/build-with-plugs.sh opengl wayland
+    stage-packages:
+      - inotify-tools
+
+layout:
+  /usr/share/fonts:
+    bind: $SNAP/usr/share/fonts
+  /etc/fonts:
+    bind: $SNAP/etc/fonts
+  /usr/share/icons:
+    bind: $SNAP/usr/share/icons

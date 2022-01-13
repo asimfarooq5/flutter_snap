@@ -50,3 +50,7 @@ layout:
     bind: $SNAP/etc/fonts
   /usr/share/icons:
     bind: $SNAP/usr/share/icons
+
+architectures:
+  - build-on: amd64
+  - build-on: arm64
